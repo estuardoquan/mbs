@@ -1,0 +1,12 @@
+- server:
+      port: 443
+      domain:
+          subject: www.meta.local
+          alternate: meta.local
+      https: /var/local/step
+      log: /var/log/nginx
+      locations:
+          - type: proxy_pass
+            value: http://ws:5000
+            include: /etc/nginx/includes/default.proxy.conf
+      redirect: 80

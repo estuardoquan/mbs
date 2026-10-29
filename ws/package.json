@@ -1,0 +1,17 @@
+{
+    "name": "websockets-server",
+    "version": "1.0.0",
+    "description": "Secure websockets server",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "start": "node --watch index.js",
+        "watch-ssl": "nodemon --watch-path=./src --watch-path=./index.js --watch-path=${WS_CRT}/site.crt --watch ./ index.js"
+    },
+    "dependencies": {
+        "express": "^5.3.0",
+        "redis": "^6.3.0",
+        "vite": "^8.3.5",
+        "ws": "^8.22.0"
+    }
+}

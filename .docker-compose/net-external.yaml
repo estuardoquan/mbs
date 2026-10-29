@@ -1,0 +1,20 @@
+networks:
+    redis:
+        driver: bridge
+    local:
+        driver: bridge
+    20_vlan:
+        external: true
+services:
+    redis:
+        networks:
+            redis: {}
+    ws:
+        networks:
+            local: {}
+            redis: {}
+    nginx:
+        networks:
+            20_vlan:
+                ipv4_address: $NGINX_ADDRESS
+            local: {}
