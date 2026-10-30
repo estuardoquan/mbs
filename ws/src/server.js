@@ -71,8 +71,13 @@ export default (async () => {
 
 	subscribers.entries().forEach(redis_connect);
 
-	await subscribers.get('terminal').subscribe('app:notifications', (message, channel) => {
+    await subscribers.get('terminal').subscribe('app:claude', async (message, channel) => {
+        const h = (await redis.lRange(message, 0, -1)).map(JSON.parse);
+	});
+
+    await subscribers.get('terminal').subscribe('app:notifications', (message, channel) => {
 		console.log(channel, message);
+
 	});
 
 	const wss = new WebSocketServer({ noServer: true });
@@ -118,14 +123,19 @@ export default (async () => {
 		const { messaging_product, metadata, contacts} = value;
         
         if ("messages" in value) {
-		    const m = value.messages[0];
+            for (const m of value.messages) {
+                if (m.type === "text") {
+                    const k = `conv:${m.from}`;
+                    const e = JSON.stringify({
+                        direction: "in",
+                        ...m
+                    }, null, 2);
 
-            if (m.type === "text") {
-                //const { body } = m.text;
 
-		        const message = JSON.stringify(m.text, null, 2);
-
-		        await redis.publish('app:notifications', message);
+                    await redis.rPush(k, e);
+                    await redis.publish('app:claude', k);
+		            await redis.publish('app:notifications', `${m.from}:${m.text.body}`);
+                }
             }
             
         }
