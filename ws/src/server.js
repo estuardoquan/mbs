@@ -111,32 +111,31 @@ export default (async () => {
 	router.post('/meta', async (req, res) => {
 		const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
 		
-        console.log("=== NEW MESSAGE ==\n");
-
 		const { object, entry } = req.body;
 		const { id, changes } = entry[0];
 		const { field, value } = changes[0];
 
+		const { messaging_product, metadata, contacts} = value;
+        
         if ("messages" in value) {
-		    const { messaging_product, metadata, contacts, messages } = value;
+		    const m = value.messages[0];
 
-            console.log(messages);
+            if (m.type === "text") {
+                //const { body } = m.text;
+
+		        const message = JSON.stringify(m.text, null, 2);
+
+		        await redis.publish('app:notifications', message);
+            }
+            
         }
 
         if ("statuses" in value) {
-		    const { messaging_product, metadata, contacts, statuses } = value;
-            
-            console.log(statuses);
+		    const s = value.statuses[0];
+		    await redis.publish('app:notifications', s.status);
         }
 		
-        //console.log(entry.length, changes.length);
-        //console.log(value);
 
-        console.log("\n=== END MESSAGE ==\n");
-
-		// const message = JSON.stringify(req.body, null, 2);
-
-		// await redis.publish('app:notifications', message);
 
 		res.status(200).end();
 	});
