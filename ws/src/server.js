@@ -116,13 +116,22 @@ export default (async () => {
 		const { object, entry } = req.body;
 		const { id, changes } = entry[0];
 		const { field, value } = changes[0];
-		const { messaging_product, metadata, contacts, messages } = value;
-		
-        let m = messages[0];
 
-        console.log(value);
-        console.log(m.text, m.type);
-        
+        if ("messages" in value) {
+		    const { messaging_product, metadata, contacts, messages } = value;
+
+            console.log(messages);
+        }
+
+        if ("statuses" in value) {
+		    const { messaging_product, metadata, contacts, statuses } = value;
+            
+            console.log(statuses);
+        }
+		
+        //console.log(entry.length, changes.length);
+        //console.log(value);
+
         console.log("\n=== END MESSAGE ==\n");
 
 		// const message = JSON.stringify(req.body, null, 2);
