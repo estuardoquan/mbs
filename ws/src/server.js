@@ -80,7 +80,10 @@ export default (async () => {
 		    const h = (await redis.lRange(message, -20, -1)).map(JSON.parse);
 		    const reply = await ask_claude(to_claude(h));
 
-		    if (!reply) return;
+		    if (!reply) {
+                console.log("no reply");
+                return;
+            };
 
             const id = await send_msg(to, reply);
 
