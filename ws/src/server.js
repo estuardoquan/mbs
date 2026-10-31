@@ -8,7 +8,8 @@ import { createServer as createHttp } from 'http';
 import { createServer as createHttps } from 'https';
 import { createClient } from 'redis';
 
-import { to_claude, ask_claude, send_msg } from './agent.js';
+//import { to_claude, ask_claude, send_msg } from './agent.js';
+import { to_claude, ask_claude, send_msg } from './agent2.js';
 
 const downloadImage = async (url, path) => {
 	try {
@@ -81,9 +82,9 @@ export default (async () => {
 
 		    if (!reply) return;
 
-            //const id = await send_msg(to, reply);
+            const id = await send_msg(to, reply);
 
-		    //await redis.rPush(message, JSON.stringify({ direction: 'out', id, to, type: 'text', text: { body: reply } }));
+		    await redis.rPush(message, JSON.stringify({ direction: 'out', id, to, type: 'text', text: { body: reply } }));
 		    await redis.publish('app:notifications', `${to}:${reply}`);
 	    } catch (err) {
 		    console.error(channel, message, err);

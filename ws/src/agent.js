@@ -53,11 +53,11 @@ async function ask_claude(messages) {
 }
 
 async function send_msg(to, body) {
-	const res = await fetch(`https://graph.facebook.com/v26.0/${process.env.WA_PHONE_NUMBER_ID}/messages`, {
+	const res = await fetch(`https://graph.facebook.com/v26.0/${process.env.WS_WA_ID}/messages`, {
 		method: 'POST',
 		headers: {
 			'content-type': 'application/json',
-			authorization: `Bearer ${process.env.WA_TOKEN}`,
+			authorization: `Bearer ${process.env.WS_WA_TOKEN}`,
 		},
 		body: JSON.stringify({ messaging_product: 'whatsapp', recipient_type: 'individual', to, type: 'text', text: { body } }),
 	});
