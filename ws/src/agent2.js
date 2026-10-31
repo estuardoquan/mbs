@@ -35,7 +35,7 @@ async function ask_claude(messages) {
 		},
 		body: JSON.stringify({
 			model: 'claude-haiku-5-5',
-			max_tokens: 1024,
+			max_tokens: 4096,
 			system: SYSTEM_PROMPT,
 			messages,
 			mcp_servers: [{ type: 'url', url: 'https://recsacorp.com/_api/mcp', name: 'wix' }],
@@ -46,6 +46,16 @@ async function ask_claude(messages) {
 	const data = await res.json();
 
 	if (!res.ok) throw new Error(`Claude ${res.status}: ${JSON.stringify(data.error)}`);
+
+	console.log(JSON.stringify({
+		stop_reason: data.stop_reason,
+		usage: data.usage,
+		content: data.content.map((b) =>
+			b.type === 'mcp_tool_use' ? { type: b.type, name: b.name, input: b.input }
+			: b.type === 'mcp_tool_result' ? { type: b.type, is_error: b.is_error, result: JSON.stringify(b.content).slice(0, 300) }
+			: b.type === 'text' ? { type: b.type, text: b.text }
+			: { type: b.type }),
+	}, null, 2));
 
 	return data.content.filter((b) => b.type === 'text').at(-1)?.text;
 }
