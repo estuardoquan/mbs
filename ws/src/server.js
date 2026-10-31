@@ -8,8 +8,9 @@ import { createServer as createHttp } from 'http';
 import { createServer as createHttps } from 'https';
 import { createClient } from 'redis';
 
-//import { to_claude, ask_claude, send_msg } from './agent.js';
-import { to_claude, ask_claude, send_msg } from './agent2.js';
+import { to_claude, send_msg } from './agent.js';
+//import { ask_claude_shopify as ask_claude } from './shopify.js';
+import { ask_claude_wix as ask_claude } from './wix.js';
 
 const downloadImage = async (url, path) => {
 	try {
